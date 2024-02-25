@@ -1,118 +1,191 @@
-let openShopping = document.querySelector('.shopping');
-let closeShopping = document.querySelector('.closeShopping');
-let list = document.querySelector('.list');
-let listCard = document.querySelector('.listCard');
-let body = document.querySelector('body');
-let total = document.querySelector('.total');
-let quantity = document.querySelector('.quantity');
-let removeAllButton = document.querySelector('.removeAllButton');
+document.addEventListener("DOMContentLoaded", () => {
+    const isWishlistPage = window.location.pathname.includes("wishlist.html");
 
-openShopping.addEventListener('click', () => {
-    body.classList.add("active");
-});
-
-closeShopping.addEventListener('click', () => {
-    body.classList.remove('active');
-});
-
-let products = [
-    {
-        id: 1,
-        name: 'IPHONE',
-        image: 'https://suprememobiles.in/cdn/shop/files/2_77f2d95b-9505-4bdb-9c36-68dae0d18ca2.jpg?v=1694774793',
-        price: 3000
-    },
-    {
-        id: 2,
-        name: 'XIAOMI',
-        image: 'https://itouchcommunications.com/wp-content/uploads/2023/03/Xiaomi-Redmi-12C.jpg',
-        price: 1000
-    },
-    {
-        id: 3,
-        name: 'SAMSUNG',
-        image: 'https://suprememobiles.in/cdn/shop/files/1_0e33ac91-83c7-4b73-b1b3-d70e99f6e37c.png?v=1701496647',
-        price: 2500
+    if (isWishlistPage) {
+        DisplayWishlist();
     }
-];
 
-let listCards = [];
-
-function initScript() {
-    let list = document.querySelector('.list');
-    products.forEach((value, key) => {
-        let productDiv = document.createElement('div');
-        productDiv.classList.add('product');
-        productDiv.innerHTML = `
-            <img src="${value.image}"/>
-            <div class="title">${value.name}</div>
-            <div class="price">${value.price.toLocaleString()} Azn</div>
-            <button onclick="addToCard(${key})">Add To Cart</button>
-        `;
-        list.appendChild(productDiv);
+    document.getElementById("go-to-checkout").addEventListener("click", () => {
+        window.location.href = "./checkout.html";
     });
 
-    removeAllButton.addEventListener('click', removeAllFromCard);
-}
+    const addToCartButton = document.querySelectorAll(".add-to-cart");
+    const deleteAll = document.getElementById("delete-all");
 
-initScript();
+    deleteAll.addEventListener("click", () => {
+        localStorage.removeItem("sebet");
+        const cartItems = document.getElementById("cart-items");
+        cartItems.innerText = "Empty";
+        document.getElementById("total-price").innerText = "0";
+        UpdateCartCount();
+    });
 
-function addToCard(key) {
-    if (listCards[key] == null) {
-        listCards[key] = { ...products[key], quantity: 1, clickCount: 1 };
-    } else {
-        listCards[key].quantity++;
-    }
-    listCards[key].price = listCards[key].quantity * products[key].price * listCards[key].clickCount;
+    addToCartButton.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const card = e.target.closest(".card");
+            const product = {
+                id: card.dataset.id,
+                image: card.querySelector("img").src,
+                title: card.querySelector("h3").innerText,
+                price: parseFloat(card.querySelector("p").innerText.replace('$', '')),
+                quantity: 1
+            };
 
-    reloadCard();
-}
+            addToCart(product);
+            DisplayCart();
+        });
+    });
 
-function changeQuantityInCard(key, newQuantity) {
-    if (listCards[key] != null) {
-        newQuantity = Math.max(0, newQuantity);
-        listCards[key].quantity = newQuantity;
-        listCards[key].price = newQuantity * products[key].price * listCards[key].clickCount;
-    }
-    reloadCard();
-}
+    function addToCart(addproduct) {
+        let cart = JSON.parse(localStorage.getItem("sebet")) || [];
 
-function removeFromCard(key) {
-    listCards.splice(key, 1);
-    reloadCard();
-}
+        const existingProductIndex = cart.findIndex((product) => product.id === addproduct.id);
 
-function removeAllFromCard() {
-    listCards = [];
-    reloadCard();
-}
-
-function reloadCard() {
-    listCard.innerHTML = '';
-    let count = 0;
-    let totalprice = 0;
-
-    listCards.forEach((value, key) => {
-        if (value != null) {
-            totalprice += value.price;
-            count += value.quantity;
-            let productDiv = document.createElement('li');
-            productDiv.innerHTML = `
-                <img src="${value.image}"/>
-                <div class="title">${value.name}</div>
-                <div class="price">${value.price.toLocaleString()} Azn</div>
-                <div class="quantity">${value.quantity}</div>
-                <div class="button-container">
-                    <button onclick="changeQuantityInCard(${key}, ${value.quantity - 1})">-</button>
-                    <div class="count">${value.quantity}</div>
-                    <button onclick="changeQuantityInCard(${key}, ${value.quantity + 1})">+</button>
-                    <button class="remove-button" onclick="removeFromCard(${key})">Remove</button>
-                </div>
-            `;
-            listCard.appendChild(productDiv);
+        if (existingProductIndex > -1) {
+            cart[existingProductIndex].quantity += 1;
+        } else {
+            cart.push(addproduct);
         }
+
+        localStorage.setItem("sebet", JSON.stringify(cart));
+        UpdateCartCount();
+    }
+
+    function DisplayCart() {
+        let cart = JSON.parse(localStorage.getItem("sebet")) || [];
+        const cartItems = document.getElementById("cart-items");
+        cartItems.innerHTML = '';
+
+        cart.forEach((product) => {
+            const pro = document.createElement("div");
+            pro.innerHTML = `<div class="cartProduct" data-id=${product.id}>
+                <img class="cartImage" src=${product.image} alt="Mercedes">
+                ${product.title}-${product.quantity} eded -Price: ${(product.quantity * product.price).toFixed(2)}
+                <i class="fa-solid fa-trash delete-product"></i>
+            </div>`;
+            cartItems.appendChild(pro);
+        });
+
+        const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        document.getElementById("total-price").textContent = totalPrice.toFixed(2);
+
+        const deleteProduct = document.querySelectorAll(".delete-product");
+
+        deleteProduct.forEach(delPro => {
+            delPro.addEventListener("click", (e) => {
+                const card = e.target.closest(".cartProduct");
+                const productId = card.dataset.id;
+                RemoveProduct(productId);
+            });
+        });
+    }
+
+    function RemoveProduct(productID) {
+        const cart = JSON.parse(localStorage.getItem("sebet")) || [];
+        const updateCart = cart.filter(item => item.id !== productID);
+
+        localStorage.setItem("sebet", JSON.stringify(updateCart));
+        UpdateCartCount();
+        DisplayCart();
+    }
+
+    function UpdateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("sebet")) || [];
+        const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+        document.getElementById("cart-count").innerText = totalCount;
+    }
+
+    const addToWishlistButton = document.querySelectorAll(".add-to-wishlist");
+
+    addToWishlistButton.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const card = e.target.closest(".card");
+            const product = {
+                id: card.dataset.id,
+                image: card.querySelector("img").src,
+                title: card.querySelector("h3").innerText,
+                price: parseFloat(card.querySelector("p").innerText.replace("$", '')),
+                quantity: 1
+            };
+            addToWishlist(product);
+            if (isWishlistPage) {
+                DisplayWishlist();
+            } else {
+                window.location.href = "./wishlist.html";
+            }
+        });
     });
 
-    total.innerText = totalprice.toLocaleString();
-    quantity.innerText = count;
-}
+    function addToWishlist(data) {
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+        let isHas = (product) => product.id === data.id;
+        const existWishlist = wishlist.some(isHas);
+
+        if (!existWishlist) {
+            wishlist.push(data);
+            localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        } else {
+            alert("Bu product wishlistde var!");
+        }
+    }
+
+    function DisplayWishlist() {
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const wishlistItems = document.getElementById("wishlist-items");
+
+        wishlistItems.innerHTML = '';
+
+        wishlist.forEach((product) => {
+            const productElement = document.createElement("div");
+
+            productElement.innerHTML = `<div class="card" >
+                <img src=${product.image} alt="Mercedes">
+                <h3>${product.title}</h3>
+                <p>${product.price}</p>
+                <button class="add-to-cart">Add to cart</button>
+                <button class="remove-to-wishlist" data-id=${product.id}>Remove from wishlist</button>
+            </div>`;
+
+            wishlistItems.appendChild(productElement);
+        });
+
+        wishlistItems.querySelectorAll(".add-to-cart").forEach((button, index) => {
+            button.addEventListener("click", () => {
+                const product = wishlist[index];
+                addToCart({
+                    id: product.id,
+                    image: product.image,
+                    title: product.title,
+                    price: parseFloat(product.price),
+                    quantity: 1
+                });
+                DisplayCart();
+                window.location.href = "index.html";
+            });
+        });
+
+        wishlistItems.querySelectorAll(".remove-to-wishlist").forEach(button => {
+            button.addEventListener("click", (e) => {
+                const productId = e.target.dataset.id;
+                removeFromWishlist(productId);
+                DisplayWishlist();
+                if (wishlistItems.children.length === 0) {
+                    window.location.href = "index.html";
+                }
+            });
+        });
+    }
+
+    function removeFromWishlist(productID) {
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const updatedWishlist = wishlist.filter((item) => item.id !== productID);
+
+        localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    }
+
+    UpdateCartCount();
+    DisplayCart();
+    DisplayWishlist();
+});

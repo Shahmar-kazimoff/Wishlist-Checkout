@@ -12,31 +12,62 @@
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <div class="div-main" style="display: flex;justify-content: space-between;align-items: center;">
-                <h1 style="text-align: center;">PHONES</h1>
-                <div class="shopping">
-                    <i style="cursor: pointer;;font-size: 30px;color: darkgreen;" class="fa-solid fa-cart-shopping"></i>
-                    <span class="quantity">0</span>
+    <nav id="navbar">
+        <div class="logo">Basket</div>
+        <div class="cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            (<span id="cart-count">0</span>)
+            <div id="dropdown-cart">
+                <div id="cart-items">
+
                 </div>
+                <div class="cart-total">
+                    Toplam - <span id="total-price">0</span>
+                </div>
+                <button id="delete-all">Delete All</button>
+                <button id="go-to-checkout">Checkout</button>
             </div>
-        </header>
-        <div class="list">
+        </div>
+    </nav>
+
+    <section class="products">
+        <div class="card" data-id="1">
+            <img src="https://group.mercedes-benz.com/bilder/produkte/pkw/mercedes-benz/a-klasse/a-klasse-w1920xh1080-cutout.jpg"
+                alt="Mercedes">
+            <h3>Item 1</h3>
+            <p>$20</p>
+            <button class="add-to-cart">Add to cart</button>
+            <a style="margin-left: 5px;font-size: 25px;cursor: pointer; position: absolute;" class="add-to-wishlist"><i
+                    style="color: red;" class="fa-solid fa-heart"></i></a>
+        </div>
+        <div class="card" data-id="2">
+            <img src="https://group.mercedes-benz.com/bilder/produkte/pkw/mercedes-benz/a-klasse/a-klasse-w1920xh1080-cutout.jpg"
+                alt="Mercedes">
+            <h3>Item 2</h3>
+            <p>$80</p>
+            <button class="add-to-cart">Add to cart</button>
+            <a style="margin-left: 5px;font-size: 25px;cursor: pointer; position: absolute;" class="add-to-wishlist"><i
+                    style="color: red;" class="fa-solid fa-heart"></i></a>
+        </div>
+        <div class="card" data-id="3">
+            <img src="https://group.mercedes-benz.com/bilder/produkte/pkw/mercedes-benz/a-klasse/a-klasse-w1920xh1080-cutout.jpg"
+                alt="Mercedes">
+            <h3>Item 3</h3>
+            <p>$180</p>
+            <button class="add-to-cart">Add to cart</button>
+            <a style="margin-left: 5px;font-size: 25px;cursor: pointer; position: absolute;" class="add-to-wishlist"><i
+                    style="color: red;" class="fa-solid fa-heart"></i></a>
+        </div>
+    </section>
+
+    <!-- <section class="wishlist">
+        <h1>Whislist</h1>
+        <div id="wishlist-items">
 
         </div>
-    </div>
-    <div class="card">
-        <h1>Card</h1>
-        <ul class="listCard"></ul>
-        <button style="cursor: pointer;" class="removeAllButton">Remove All</button>
-        <div class="checkOut">
-            <div class="total">0</div>
-            <div class="closeShopping">Close</div>
-        </div>
-    </div>
+    </section> -->
 
-    <script src="./script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

@@ -1,172 +1,70 @@
-
-.container {
-    width: 100%;
-    margin: auto;
-    transition: 0.5s;
+*{
+    margin: 0;
+    padding: 0;
 }
 
-header {
-    display: grid;
-    grid-template-columns: 1fr 50px;
-    margin-bottom: 50px;
-}
-
-header .shopping {
-    position: relative;
-    right: 50px;
-}
-
-header .shopping span {
-    background-color: red;
-    border-radius: 50%;
+#navbar{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    position: absolute;
-    top: -5px;
-    left: 80%;
-    padding: 3px 10px;
-}
-
-.list {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.card {
-    position: fixed;
-    top: 0;
-    left: 100%;
-    width: 400px;
-    background-color: rgb(26, 18, 60);
-    height: 100%;
-    transition: 0.5s;
-}
-
-.card h1 {
-    color: orange;
-    font-weight: 900;
-    padding: 0 20px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-}
-
-.card .checkOut {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 40px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.card .checkOut div {
-    background-color: gold;
-    width: 100%;
-    height: 70%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.card .checkOut div:nth-child(2) {
+    justify-content: space-between;
+    padding: 15px;
     background-color: black;
     color: white;
 }
 
-.active .card {
-    left: calc(100% - 400px);
-}
-
-.active .container {
-    transform: translateX(-200px);
-}
-
-.list .product {
-    text-align: center;
-    padding: 20px;
-    letter-spacing: 1px;
-    background-color: rgb(250, 251, 251);
-}
-
-.list .product img {
-    width: 100%;
-    height: 60%;
-}
-
-.list .product {
-    text-align: center;
-    padding: 30px;
-}
-
-.list .product .price {
-    margin: 10px;
-}
-
-.list .product button {
-    cursor: pointer;
-    color: white;
-    background-color: rgb(12, 75, 48);
-    width: 100%;
+.cartImage{
+    width: 40px;
     height: 40px;
 }
 
-.listCard li {
-    display: grid;
-    grid-template-columns: 100px repeat(3, 1fr);
-    color: white;
-    row-gap: 10px;
-    margin-bottom: 20px;
-}
-
-.listCard li div {
+.products{
+    padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    column-gap: 10px;
 }
-
-.listCard li img {
-    width: 100%;
-}
-
-.listCard button {
-    width: 100%;
-    background-color: darkred;
-    color: white;
-    padding: 3px 10px;
-    border: none;
-}
-
-.listCard .count {
-    margin: 0 10px;
-}
-
-.button-container{
+.card{
+    width: 30%;
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    gap: 10px;
 }
-.removeAllButton{
-    margin-left: 20px;
-    background-color: darkred;
-    color: white;
-    padding: 7px;
+
+img{
     width: 100%;
 }
 
-@media screen and (max-width: 992px) {
-    .list {
-        display: flex;
-        flex-direction: column;
-    }
-    .div-main {
-        position: fixed;
-        right: 0;
-        left: 0;
-        background-color: darkgray;
-    }
+button{
+    border: none;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: blue;
+    color: white;
+    font-weight: 700;
+    width: max-content;
+    cursor: pointer;
+}
+
+.cart{
+    position: relative;
+    cursor: pointer;
+}
+
+#dropdown-cart{
+opacity: 0;
+position: absolute;
+right: 0;
+top: 34px;
+width: 250px;
+border: 1px solid black;
+z-index: 5;
+padding: 10px;
+background-color: aqua;
+color: black;
+transition: .8s;
+
+
+}
+
+.cart:hover #dropdown-cart{
+  opacity: 1;
 }
